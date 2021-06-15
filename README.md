@@ -19,5 +19,5 @@
 - Access the application from your browser using localhost:8000
 
 ## How to feed data from API
-- Use the endpoint ```*/api/invoices*``` for the list of the Invoice that we store in the database
-- Use the endpoint ```*/api/invoices/{id}*``` for the specific Invoice ID
+- Use the endpoint ```/api/invoices``` for the list of the Invoice that we store in the database
+- Use the endpoint ```/api/invoices/{id}``` for the specific Invoice ID
