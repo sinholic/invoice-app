@@ -16,8 +16,8 @@ class CreateInvoicesTable extends Migration
         Schema::create('invoices', function (Blueprint $table) {
             $table->id();
             $table->string('number')->unique();
-            $table->date('issue_date')->nullable()->default(\DB::raw('CURRENT_TIMESTAMP'));
-            $table->date('due_date')->nullable()->default(\DB::raw('CURRENT_TIMESTAMP'));
+            $table->date('issue_date')->default(\DB::raw('CURRENT_TIMESTAMP'));
+            $table->date('due_date')->default(\DB::raw('CURRENT_TIMESTAMP'));
             $table->text('subject');
             $table->boolean('is_paid')->nullable()->default(false);
             $table->unsignedBigInteger('client_id');
