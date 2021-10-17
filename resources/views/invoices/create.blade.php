@@ -14,6 +14,10 @@
                 alert('Quantity must be larger than 0');
                 return;
             }
+            if (item_id == 0 || isNaN(item_id)) {
+                alert('Item must be selected');
+                return;
+            }
             if (quantity > 1000000) {
                 alert('Maximum Item Quantity is 1000000')
             }
@@ -137,7 +141,7 @@
             </select>
         </div>
         <div class="col-sm-9 offset-2">
-            <input type="number" id="inputQuantity" class="form-control" placeholder="Quantity">
+            <input type="number" min="1" max="1000000" id="inputQuantity" class="form-control" placeholder="Quantity">
         </div>
         <div class="col-sm-1">
             <button id="add-item" type="button" class="btn btn-success"><i class="bi bi-plus-lg"></i></button>

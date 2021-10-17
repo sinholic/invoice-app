@@ -14,9 +14,60 @@ class InvoiceController extends Controller
     /**
      * Display a listing of the resource.
      *
+     * @param \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
+    {        
+        try {
+            // Get the daterange, otherwise set a default value
+            $start_date = array_filter(explode(' to ',$request->daterange))[0] ?? \Carbon\Carbon::today()->subYears(25)->toDateString();
+            $end_date = array_filter(explode(' to ',$request->daterange))[1] ?? \Carbon\Carbon::today()->toDateString();
+
+            // Table Data
+            $invoices = Invoice::whereBetween('issue_date', [$start_date, $end_date])->get();
+
+            // BarChart Data
+            $categoriesBarChart = Invoice::selectRaw('YEAR(issue_date) as tahun')
+                ->whereBetween('issue_date', [$start_date, $end_date])
+                ->groupByRaw('YEAR(issue_date)')
+                ->get()
+                ->pluck('tahun')
+                ->toJson();
+            
+            $dataInvoiceIssued = Invoice::selectRaw("COUNT('invoices.id') as count")
+                ->whereBetween('issue_date', [$start_date, $end_date])
+                ->groupByRaw('YEAR(issue_date)')
+                ->get()
+                ->pluck('count')
+                ->toJson();
+
+            // PieChart Data
+             
+
+            return view("invoices.index", [
+                "start_date" => $start_date,
+                "end_date" => $end_date,
+
+                // Data goes here
+                "invoices" => $invoices,
+                "categoriesBarChart" => $categoriesBarChart,
+                "dataInvoiceIssued" => $dataInvoiceIssued
+            ]);
+        } catch (\Throwable $th) {
+            return view("500", [
+                "throw" => $th,
+            ]);
+        }
+    }
+
+    /**
+     * Display a listing of the resource based on request parameters.
+     *
+     * @param \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function search(Request $request)
     {
         $invoices = Invoice::all();
         return view("invoices.index", [

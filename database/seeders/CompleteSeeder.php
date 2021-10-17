@@ -29,6 +29,18 @@ class CompleteSeeder extends Seeder
 
         Invoice::factory()
         ->for(Client::factory())
+        ->count(50)
+        ->create();
+
+        InvoiceDetail::factory()
+        ->for(Item::all()->random())
+        ->for(Invoice::all()->random())
+        ->count(5)
+        ->create();
+
+        InvoiceDetail::factory()
+        ->for(Item::all()->random())
+        ->for(Invoice::all()->random())
         ->count(5)
         ->create();
 
