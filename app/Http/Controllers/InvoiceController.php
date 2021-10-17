@@ -43,7 +43,25 @@ class InvoiceController extends Controller
                 ->toJson();
 
             // PieChart Data
-             
+            $categoriesPieChart = [['name' => 'Paid Off'], ['name' => 'Not Paid Off']];
+            $dataInvoiceIsPaid = Invoice::selectRaw("is_paid as name, COUNT('invoices.id') as y")
+                ->whereBetween('issue_date', [$start_date, $end_date])
+                ->groupByRaw('is_paid')
+                ->get();
+            
+            foreach ($dataInvoiceIsPaid as &$value) {
+                switch ($value->name) {
+                    case 1:
+                        $value->name = 'Paid Off';
+                        break;
+                    
+                    default:
+                        $value->name = 'Not Paid Off';
+                        break;
+                }
+            }
+
+            $dataInvoiceIsPaid->toJson();
 
             return view("invoices.index", [
                 "start_date" => $start_date,
@@ -52,7 +70,8 @@ class InvoiceController extends Controller
                 // Data goes here
                 "invoices" => $invoices,
                 "categoriesBarChart" => $categoriesBarChart,
-                "dataInvoiceIssued" => $dataInvoiceIssued
+                "dataInvoiceIssued" => $dataInvoiceIssued,
+                "dataInvoiceIsPaid" => $dataInvoiceIsPaid,
             ]);
         } catch (\Throwable $th) {
             return view("500", [
